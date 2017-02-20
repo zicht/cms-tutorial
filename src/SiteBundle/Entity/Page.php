@@ -73,4 +73,14 @@ abstract class Page extends BasePage
     {
         return $this->language;
     }
+
+    public function isPublic()
+    {
+        return true;
+    }
+
+    public function __toString()
+    {
+        return (string)$this->title;
+    }
 }

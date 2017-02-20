@@ -1,0 +1,16 @@
+security:
+    access_decision_manager:
+        strategy:             unanimous
+
+    providers:
+        in_memory:
+            memory: ~
+
+    firewalls:
+        admin:
+            pattern: ^/
+            switch_user: true
+            context: user
+            anonymous: true
+            http_basic:
+                realm: 'Secured Area'
