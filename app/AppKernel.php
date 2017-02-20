@@ -13,7 +13,9 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
 
-            new Zicht\Bundle\PageBundle\ZichtPageBundle()
+            new Zicht\Bundle\PageBundle\ZichtPageBundle(),
+
+            new Acme\SiteBundle\AcmeSiteBundle()
         ];
     }
 }
