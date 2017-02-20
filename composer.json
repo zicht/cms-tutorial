@@ -1,6 +1,7 @@
 {
-    "name": "gerard/cms-tutorial",
+    "name": "zicht/cms-tutorial",
     "description": "zicht/cms tutorial",
+    "license": "Creative Commons Attribution",
     "require": {
         "zicht/cms": "^2.0"
     },
