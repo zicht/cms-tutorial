@@ -1,0 +1,9 @@
+imports:
+    - resource: parameters/common.yml
+
+parameters:
+    database_host: mysql
+    database_name: db
+    database_user: dev
+    database_password:
+

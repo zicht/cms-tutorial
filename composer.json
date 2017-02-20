@@ -1,0 +1,22 @@
+{
+    "name": "gerard/cms-tutorial",
+    "description": "zicht/cms tutorial",
+    "require": {
+        "zicht/cms": "^2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.0",
+        "zicht/goggle": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Acme\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Gerard van Helden",
+            "email": "gerard@zicht.nl"
+        }
+    ]
+}

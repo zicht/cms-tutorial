@@ -1,0 +1,29 @@
+services:
+    doctrine.platform.mysql:
+        class: Doctrine\DBAL\Platforms\MySqlPlatform
+
+doctrine:
+    dbal:
+        default_connection: default
+        connections:
+            default:
+                driver:   %database_driver%
+                host:     %database_host%
+                port:     %database_port%
+                dbname:   %database_name%
+                user:     %database_user%
+                password: %database_password%
+                charset:  UTF8
+                mapping_types:
+                    enum: string
+                platform_service: doctrine.platform.mysql
+
+    orm:
+        auto_generate_proxy_classes: %kernel.debug%
+        auto_mapping: true
+        dql:
+            numeric_functions:
+                RAND: 'Zicht\Bundle\FrameworkExtraBundle\Doctrine\FunctionNode\Rand'
+
+
+        naming_strategy: doctrine.orm.naming_strategy.underscore

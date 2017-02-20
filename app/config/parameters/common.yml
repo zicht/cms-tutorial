@@ -1,0 +1,10 @@
+parameters:
+    database_driver: pdo_mysql
+    database_port: 3306
+    database_user:
+    database_password:
+
+    locale: nl
+    secret: 24cd5ebac95d2a82cc09cb7bcb5673f1
+    assets_version: development
+

@@ -1,0 +1,6 @@
+zicht_page:
+    pageClass: 'Acme\SiteBundle\Entity\Page'
+    contentItemClass: ''
+    types:
+        page:
+            article: Acme\SiteBundle\Entity\ArticlePage

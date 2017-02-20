@@ -1,0 +1,1 @@
+zicht_page:     { resource: "@ZichtPageBundle/Controller", prefix: "/{_locale}" }

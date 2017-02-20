@@ -1,0 +1,7 @@
+zicht_menu:
+    builder_service: mybundle.menu_builder
+    menus: ['main', 'service']
+
+services:
+    mybundle.menu_builder:
+        class: Zicht\Bundle\MenuBundle\Menu\Builder
