@@ -10,6 +10,6 @@ framework:
     templating:
         engines: ['twig']
         assets_version: %assets_version%
-#    default_locale:  %locale%
+    default_locale:  %locale%
 #
 #    session: ~

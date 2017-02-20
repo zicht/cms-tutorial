@@ -34,6 +34,11 @@ abstract class Page extends BasePage
 
     private $contentItems;
 
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $language;
+
     public function __construct()
     {
         $this->contentItems = new ArrayCollection();
@@ -62,5 +67,10 @@ abstract class Page extends BasePage
     public function getId()
     {
         return $this->id;
+    }
+
+    public function getLanguage()
+    {
+        return $this->language;
     }
 }
