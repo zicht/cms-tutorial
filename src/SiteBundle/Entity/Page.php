@@ -39,9 +39,10 @@ abstract class Page extends BasePage
      */
     private $language;
 
-    public function __construct()
+    public function __construct($title)
     {
         $this->contentItems = new ArrayCollection();
+        $this->title = $title;
     }
 
     public function getContentItems($region = null)
@@ -82,5 +83,13 @@ abstract class Page extends BasePage
     public function __toString()
     {
         return (string)$this->title;
+    }
+
+    /**
+     * @param mixed $language
+     */
+    public function setLanguage($language)
+    {
+        $this->language = $language;
     }
 }

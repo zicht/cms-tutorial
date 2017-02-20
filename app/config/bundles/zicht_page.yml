@@ -5,3 +5,4 @@ zicht_page:
     types:
         page:
             article: Acme\SiteBundle\Entity\ArticlePage
+

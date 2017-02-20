@@ -2,8 +2,6 @@ tasks:
     setup: |
         ./vendor/bin/goggle set -e app/config/parameters/common.yml parameters kernel.secret $$(date | md5sum | awk '{print $1}')
 
-    reset: |
-        mysqladmin drop -f db; mysqladmin create -f db; php app/console doctrine:schema:create
-        mysql db < ./setup.sql
-
-
+    reset: 
+        - mysqladmin drop -f db; mysqladmin create -f db; php app/console doctrine:schema:create
+        - php app/console doctrine:fixtures:load -n

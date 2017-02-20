@@ -1,7 +1,10 @@
-zicht_menu:
-    builder_service: mybundle.menu_builder
-    menus: ['main', 'service']
-
 services:
-    mybundle.menu_builder:
+    acme.menu_builder:
         class: Zicht\Bundle\MenuBundle\Menu\Builder
+        arguments:
+            - @knp_menu.factory
+            - @doctrine
+
+zicht_menu:
+    builder_service: acme.menu_builder
+    menus: ['main']

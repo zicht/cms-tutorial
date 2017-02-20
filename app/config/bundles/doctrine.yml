@@ -25,5 +25,12 @@ doctrine:
             numeric_functions:
                 RAND: 'Zicht\Bundle\FrameworkExtraBundle\Doctrine\FunctionNode\Rand'
 
+        mappings:
+            tree:
+                type: annotation
+                alias: Gedmo
+                prefix: Gedmo\Tree\Entity
+                # make sure vendor library location is correct
+                dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Tree/Entity"
 
         naming_strategy: doctrine.orm.naming_strategy.underscore
