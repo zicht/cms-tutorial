@@ -39,7 +39,7 @@ abstract class Page extends BasePage
      */
     private $language;
 
-    public function __construct($title)
+    public function __construct($title = '')
     {
         $this->contentItems = new ArrayCollection();
         $this->title = $title;

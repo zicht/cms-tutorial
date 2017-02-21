@@ -2,3 +2,4 @@
 /app/logs/*
 /app/bootstrap.php.cache
 /vendor/*
+/web/bundles/*

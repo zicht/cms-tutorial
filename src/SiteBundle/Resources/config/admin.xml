@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="acme.admin.page" class="Acme\SiteBundle\Admin\PageAdmin">
+            <tag name="sonata.admin" manager_type="orm" group="Structure" label="Pages" label_translator_strategy="sonata.admin.label.strategy.underscore"/>
+            <argument/>
+            <argument>Acme\SiteBundle\Entity\Page</argument>
+            <argument>ZichtAdminBundle:CRUD</argument>
+            <argument>zicht_site.admin.content_item</argument>
+
+            <call method="setPageManager">
+                <argument type="service" id="zicht_page.page_manager"/>
+            </call>
+            <call method="setUrlProvider">
+                <argument type="service" id="zicht_url.provider"/>
+            </call>
+            <call method="setMenuManager">
+                <argument type="service" id="zicht_menu.menu_manager"/>
+            </call>
+            <call method="setTranslationDomain">
+                <argument>admin</argument>
+            </call>
+        </service>
+
+        <service id="acme.admin.content_item" class="Zicht\Bundle\PageBundle\Admin\ContentItemAdmin">
+            <tag name="sonata.admin" manager_type="orm" group="Structure" label="Content Item" show_in_dashboard="0" label_translator_strategy="sonata.admin.label.strategy.underscore"/>
+            <argument/>
+            <argument>Acme\SiteBundle\Entity\ContentItem</argument>
+            <argument>SonataAdminBundle:CRUD</argument>
+            <call method="setTranslationDomain">
+                <argument>admin</argument>
+            </call>
+        </service>
+
+        <service id="acme.admin.content_item_detail" class="Acme\SiteBundle\Admin\ContentItemDetailAdmin">
+            <tag name="sonata.admin" manager_type="orm" group="Structure" label="Content Item" show_in_dashboard="0" label_translator_strategy="sonata.admin.label.strategy.underscore"/>
+            <argument/>
+            <argument>Acme\SiteBundle\Entity\ContentItem</argument>
+            <argument>ZichtPageBundle:ContentItemDetailCRUD</argument>
+            <call method="setTranslationDomain">
+                <argument>admin</argument>
+            </call>
+        </service>
+    </services>
+</container>

@@ -7,4 +7,3 @@ parameters:
     locale: nl
     secret: 24cd5ebac95d2a82cc09cb7bcb5673f1
     assets_version: development
-

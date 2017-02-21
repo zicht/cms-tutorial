@@ -90,7 +90,9 @@ require_once __DIR__ . '/bootstrap.php';
 
 (new AppKernel())->console();
 ```
-The `console` function is provided by Zicht's base kernel
+
+The `console` function is provided by [Zicht's base
+kernel](https://github.com/zicht/symfony-util).
 
 
 ### 1.6 Create the web front controller
@@ -101,6 +103,9 @@ require_once __DIR__ . '/../app/bootstrap.php';
 
 (new AppKernel())->web();
 ```
+
+The `console` function is provided by [Zicht's base
+kernel](https://github.com/zicht/symfony-util).
 
 ### 1.7 Setup basic configuration
 
@@ -205,7 +210,7 @@ framework:
 You are done setting up your base symfony application.
 
 
-### 2 Configure an application bundle
+# 2 Configure an application bundle
 At this point, we are also going to add an application-specific bundle. We tend
 to follow the convention that each project has their own bundle, containing
 typically anything that was built specifically for that project. Sometimes one
@@ -216,7 +221,7 @@ integrations in bundle B).
 In the rest of this tutorial, we will use Acme as the vendor name and
 SiteBundle as the bundle name:
 
-#### 2.1 Configure autoloading
+## 2.1 Configure autoloading
 
 In `composer.json` add the following:
 
@@ -235,7 +240,7 @@ In `composer.json` add the following:
 Then, add the files as they appear in `zicht/cms-tutorial/src`.
 
 
-## 3. Configuring the Page bundle
+# 3. Configuring the Page bundle
 The page bundle provides a simple means of storing pages of any type in the
 database. It makes extensive use of doctrine's feature which is called
 "inheritance mapping". Different page types are reflected by creating new
@@ -249,7 +254,7 @@ some cases introducing your own data model is much more efficient than
 utilizing the pages model. You are not at all required to use the PageBundle to
 make use of any of the other features of the Zicht CMS.
 
-### 3.1 Add the page bundle to your AppKernel
+## 3.1 Add the page bundle to your AppKernel
 
 Of course, you need to register this bundle in the AppKernel:
 
@@ -265,7 +270,7 @@ Of course, you need to register this bundle in the AppKernel:
 ```
 
 
-### 3.2 Configure bundle routing
+## 3.2 Configure bundle routing
 Since this is the first bundle you will have the routing for, you can add the
 routing config to `app/config/routing.yml`
 
@@ -285,7 +290,7 @@ route `/en/page/{id}`. So for the first page we built, we can see it at
 Of course you are not obliged to follow this routing, you can configure your
 own following the Symfony routing configuration, however you wish. 
 
-### 3.3 Add a base configuration for the bundle
+## 3.3 Add a base configuration for the bundle
 
 #### `app/config/bundles/zicht_page.yml`
 
@@ -303,7 +308,7 @@ This configuration is needed to tell the page bundle which you consider your
 This more or less reflects the inheritance mapping you will use in your
 doctrine config. 
 
-### 3.4 Configuring the entities
+## 3.4 Configuring the entities
 
 See the source code for this tutorial how these entities are configured:
 
@@ -312,28 +317,31 @@ See the source code for this tutorial how these entities are configured:
 At this point, it will prove useful to checkout the source code of
 `zicht/cms-tutorial` and inspect the contents of tag `page-bundle`, which has a
 few basics in place and see if you can get it to working. *Tip* you can use the
-`config_local.yml` in case you want to configure something custom without
-affecting the git-managed source tree.
+`config_local.yml` as documented above in case you want to configure something
+custom without affecting the git-managed source tree.
 
-### 3.5 Add the template
+## 3.5 Add the template
 See
 https://github.com/zicht/cms-tutorial/blob/page-bundle/src/SiteBundle/Resources/views/Page/article.html.twig
-for an example of the template. The name of the template is identified by the
+for an example of the template. The name of the template is derived from the
 `PageManager::getTemplate()` method, which defaults to a strategy where the
 bundle name of the entity is inferred, and `:Page:{type}' is added to the
 bundle name. You can easily override this by either extending the page manager,
 or overloading the `getTemplateName` method.
 
-### 3.6 Add a page
+## 3.6 Add a page
 In MySQL, execute the queries as described in
 https://github.com/zicht/cms-tutorial/blob/page-bundle/setup.sql
 
-This creates a "JOINED" model, with id 1. 
+This creates a "JOINED" model, with id 1. Read more about how inheritance
+mapping works in the the [doctrine manual about inheritance
+mapping](http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/inheritance-mapping.html)
 
 As soon as these steps are done, point your browser to the running application
 and open the url `/en/page/1`. This will show you the page with title 'Home'
 and content "Welcome :)".
 
+#### Exercise
 Try adding an extra type of page. Here are the steps:
 
 1. Create an extra entity class
@@ -342,7 +350,7 @@ Try adding an extra type of page. Here are the steps:
 4. Create a migration for the changes in the database
    (doctrine:migrations:diff) and apply the migration
 
-## 4. Using fixtures 
+# 4. Using fixtures 
 Since it is really tedious to write fixture data in SQL files (though it is
 great training for your mad skills), you probably want data fixtures in place.
 So add the `DoctrineFixturesBundle` to your development kernel:
@@ -361,42 +369,134 @@ and add a fixture class to the correct namespace. The
 `ZichtFrameworkExtraBundle` contains a tool that can be useful if you want to
 create fixtures without writing too much code for it. This is called the
 fixture builder and works on the basis of a principle that when you are
-building an entity. Read the https://github.com/zicht/framework-extra-bundle
+building an entity. Read the [documentation](https://github.com/zicht/framework-extra-bundle)
 for more info. In the example the builder is used, because it is particularly
 useful for tree-like structures (such as a menu).
 
-## 5. Configuring the `zicht/menu-bundle`
+# 5. Configuring the `zicht/menu-bundle`
 Let's add the ZichtMenuBundle to the app kernel, and add it's config. By
 default the menu builder simply queries the root items from the menuitem table
 and select them using the Gedmo "nested set" implementation. This is a very
 efficient way of querying tree-like data from a relational database storage.
-The result is Knp menu, which you might already know. It is a fairly
-feature-complete abstraction layer for representing menus and being able to
-render (parts of) menus and breadcrumb list. The ZichtMenuBundle simply
-provides a means of storing such menus in the MySQL backend in an efficient
-manner.
+The result is [Knp menu](https://github.com/KnpLabs/KnpMenuBundle), which you
+might already know. It is a fairly feature-complete abstraction layer for
+representing menus and being able to render (parts of) menus and breadcrumb
+list. The ZichtMenuBundle simply provides a means of storing such menus in the
+MySQL backend in an efficient manner.
 
-So, to get the ZichtMenuBundle working, you will need two other bundles configured as well:
+So, to get the ZichtMenuBundle working, you will need two other bundles
+configured as well:
 
-### 5.1 StofDoctrineExtensionsBundle
+## 5.1 StofDoctrineExtensionsBundle
 
-#### `app/config/bundles/stof_doctrine_extensions.yml`
+Add the StofDoctrineExtensionsBundle() to `AppKernel::registerBundles()` and
+add the following configuration.
+
+### `app/config/bundles/stof_doctrine_extensions.yml`
 
 ```
 stof_doctrine_extensions:
     orm:
         default:
             tree: true
-            timestampable: true
 ```
-Though the `timestampable` is not necessary for menu's, it is a very useful
-annotation to have at your disposal.
+This will make the "Tree" annotations work, which are used in the MenuBundle to
+store NestedSet data about all nodes. Read more about what a [nested
+set](https://en.wikipedia.org/wiki/Nested_set_model) is on Wikipedia
 
-This is why you need to add two other 
+## 5.2 KnpMenuBundle
 
-#### `app/config/bundles/zicht_menu.yml`
+You only need to register this bundle, nothing more. Read more about the [Knp
+menu features here](https://github.com/KnpLabs/KnpMenuBundle).
+
+## 5.3 `zicht_menu` config
+Finally, you will need to add a config identifying which menus you have
+prepared.
+
+### `app/config/bundles/zicht_menu.yml`
+
 ```
 zicht_menu:
-    builder_service: acme.menu_builder
+    menus: []
+```
+
+## 5.4 Create the menu
+Assuming you have set up the fixtures, you can configure a menu fairly easily
+by creating `MenuItem` entities and persisting them. See the cms-tutorial
+repository for a working example.
+
+```
+class MenuFixtures implements FixtureInterface, ContainerAwareInterface
+{
+    public function load()
+    {
+        $em = $this->container->get('doctrine')->getManager();
+        
+        $rootItem = new MenuItem('main', '', 'main');
+        $rootItem->setLanguage('en'); // root items need a language, ascendants inherit the language from the root.
+
+        $child1 = new MenuItem('Home', '/');
+        $rootItem->addChild($child1);
+
+        $child2 = new MenuItem('Products', '/');
+        $rootItem->addChild($child2);
+
+        // etc.
+
+        $em->persist($rootItem);
+        $em->persist($child1);
+        $em->persist($child2);
+        $em->flush();
+    }
+}
+```
+
+The example from the tutorial repository utilizes the fixture builder, which is
+documented more thoroughly in
+[zicht/framework-extra-bundle](https://github.com/zicht/framework-extra-bundle).
+
+
+## 5.5 add the menu to the bundle config
+To identify that you want to use the `main` root item as a menu, you need to configure this:
+
+```
+zicht_menu:
     menus: ['main']
 ```
+
+## 5.6 render the menu
+If you have load the fixtures you can now render the menu in your template
+using the knp menu function
+
+```
+<menu>
+    {{ knp_menu_render('main') }}
+</menu>
+```
+
+Read the documentation on the [knp
+menu](http://symfony.com/doc/master/bundles/KnpMenuBundle/index.html) library
+for how to customize your rendering.
+
+# 6. "Well, how about those admin screens?"
+These few steps show you how to very quickly set up a database-backed website
+which you can manage in any way you seem fit. You can hook up pretty much any
+admin that can work with Doctrine models, write your own forms, etc. But if you
+planned on building something yourself, you would probably not end up here ;)
+
+The `zicht/cms` bundles are integrated with the [sonata
+admin](https://sonata-project.org/bundles/admin/2-3/doc/index.html) libraries,
+currently version 2.3. Newer versions of the zicht/cms will likely support
+higher versions of sonata.
+
+## 6.1 Enable the admin bundles
+You can enable the admin bundles by configuring the following:
+
+### Register the admin bundles in the kernel:
+
+
+
+
+
+
+

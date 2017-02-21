@@ -6,3 +6,8 @@ zicht_page:
         page:
             article: Acme\SiteBundle\Entity\ArticlePage
 
+    admin:
+        base:
+            page: acme.admin.page
+            contentItem: acme.admin.content_item
+#            contentItem:

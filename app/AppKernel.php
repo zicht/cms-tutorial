@@ -13,12 +13,21 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
 
+            new Zicht\Bundle\FrameworkExtraBundle\ZichtFrameworkExtraBundle(),
+
             new Zicht\Bundle\PageBundle\ZichtPageBundle(),
             new Zicht\Bundle\UrlBundle\ZichtUrlBundle(),
 
             new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
             new Zicht\Bundle\MenuBundle\ZichtMenuBundle(),
+
+            // admin
+            new Sonata\AdminBundle\SonataAdminBundle(),
+            new Sonata\BlockBundle\SonataBlockBundle(),
+            new Sonata\DoctrineORMAdminBundle\SonataDoctrineORMAdminBundle(),
+            new Sonata\CoreBundle\SonataCoreBundle(),
+            new Zicht\Bundle\AdminBundle\ZichtAdminBundle(),
 
             new Acme\SiteBundle\AcmeSiteBundle(),
         ];

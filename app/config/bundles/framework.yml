@@ -4,12 +4,11 @@ framework:
         resource: "%kernel.root_dir%/config/routing.yml"
         strict_requirements: %kernel.debug%
 #    translator:      { fallback: %locale% }
-#    form:            true
-#    csrf_protection: true
+    form:            true
+    csrf_protection: true
 #    validation:      { enable_annotations: true }
     templating:
         engines: ['twig']
         assets_version: %assets_version%
-    default_locale:  %locale%
-#
-#    session: ~
+    default_locale:  en
+    session: ~
