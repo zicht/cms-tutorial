@@ -15,11 +15,11 @@ have the time, I'd advise you to follow the tutorial, because it gives you a
 clear overview of the different bundles, how they relate to each other and how
 they can operate independently of each other.
 
-## Bundle and dependency overview
+## Bundle interoperation 
 The following bundles are part of the `zicht/cms`. All of these bundles are
-designed to operate *independent* of the others. This means that if you do not
-wish to use Sonata, for example, you are still able to use the PageBundle, even
-though you will not use Sonata as a CMS. 
+designed to operate *independently* of the others. This means that if you do
+not wish to use Sonata, for example, you are still able to use the PageBundle,
+even though you will not use Sonata as a CMS.
 
 This also means that you can use the `zicht/url-bundle` without any of the
 other bundles, say for instance if you only want to use the "aliasing" feature.
@@ -51,45 +51,75 @@ Pages can identify their own controllers, templates, etc simply by implementing.
 Integrates tightly with:
 * zicht/url-bundle for aliasing pages
 * zicht/menu-bundle for putting pages in a menu
+* zicht/admin-bundle for management of the pages using sonata as a backend
 
 #### [`zicht/menu-bundle`](https://github.com/zicht/menu-bundle)
 Store menus of your site in the database using a nested set, render the menu
 with Knp (or render it yourself).
 
+Integrates tightly with:
+* zicht/admin-bundle for management of the pages using sonata as a backend
+
 #### [`zicht/url-bundle`](https://github.com/zicht/url-bundle)
 The URL bundle has two major functions:
 
-* Being able to "link to objects" in stead of routes.
+* Being able to link to objects in stead of routes (called "url providers")
 * Aliasing (which decouples routing from having SEO-friendly urls)
+
+Integrates tightly with:
+* zicht/admin-bundle for management of the aliases and redirects using sonata
+  as a backend. 
+
+#### [`zicht/messages-bundle`](https://github.com/zicht/messags-bundle)
+The messages bundle provides a means of managing messages (translatable
+strings) in the database rather than in files.
+
+This library is totally independent of any of the other bundles.
+
+#### [`zicht/filemanager-bundle`](https://github.com/zicht/filemanager-bundle)
+Annotate properties in your Doctrine entity to reflect locally stored files.
+Easily manage these files through symfony forms. Easily retrieve url's to files
+in your templates using twig extensions.
+
+This library is totally independent of any of the other bundles.
+
+#### [`zicht/admin-bundle`](https://github.com/zicht/admin-bundle)
+Provides integration with the [Sonata Project](https://sonata-project.org/)
+admin bundle.
+
+Integrates tightly with:
+* `zicht/page-bundle` for managing pages
+* `zicht/messages-bundle` for managing the messages
+* `zicht/url-bundle` for managing the urls
 
 ### Libraries that are implicitly required
 The following zicht libraries are implicitly required by one or some of the
 zicht bundles.
 
 #### [`zicht/util`](https://github.com/zicht/util)
-This library contains some useful utilities, such as string manipulation,
-html/xml introspection, a Mutex. This is considered a useful "root" dependency
-for any type of web project.
+Some useful low-level utilities, such as for string/url manipulation, html/xml
+introspection, a Mutex. This is considered a useful "root" dependency for any
+type of web project.
 
 #### [`zicht/itertools`](https://github.com/zicht/itertools)
-This library contains a set of useful tools and utilities to work with
-collections.
+A set of useful tools and utilities to work with collections.
 
+#### [`zicht/symfony-util`](https://github.com/zicht/symfony-util)
+Provides a base kernel with some added features on top of symfony's HttpKernel. 
 
-Hard dependencies 
+Features include:
+* Split up bundle configuration files
+* Local override for configuration
+* Split kernels for different parts of your application
+* Request handling for service-less requests (not needing to boot the
+  container)
+
+## Hard external dependencies 
 * [`symfony/symfony`](https://github.com/symfony/symfony), currently supported
-  LTS version: *2.7*.
-
-Soft dependencies
-
-
-* [`
-
-
-The documentation for each bundle i
+  LTS version: *2.7*. We intend to support 2.8 as a transitional phase, but
+  will make the move to the next LTS 3.4 as soon as that reached RC. 
 
 ## Issues and troubleshooting
-Please report issues in pull requests and the github issue reporter.
-
-
-
+Please report issues for documentation in `zicht/cms-tutorial` and report
+issues regarding the dependencies in `zicht/cms`. Any other issue can be
+reported in the related library or bundle repository.
