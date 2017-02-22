@@ -1,15 +1,19 @@
 The most effective way of getting to know Zicht CMS is to follow the tutorial
-for installation.
+for installation. However, if you want to do a quickstart, you're better off
+installing `symfony/standard-edition` (be sure to install the currently
+supported LTS version `2.7`) and install the `zicht/site-bundle` base template.
+
+Wondering how we run with symfony development? Checkout [decorum
+symfony best practices](https://github.com/zicht/decorum). 
+
+
+This is the more detailed (and thus explanatory) approach:
 
 # Step 1: setting up a symfony sandbox
-
-Setting up Symfony sandbox is easy. You can start with the Symfony standard
-edition, but that would leave you with removing and replacing a lot of stuff
-you don't really need. So my advice would be to follow these simple steps in
-stead:
+Setting up Symfony sandbox is easier than you may think, especially if you know
+exactly what you do and don't need. 
 
 ## 1.1 Initialize your repo:
-
 Assuming you have `composer` available (https://getcomposer.org), you can run
 the following:
 
@@ -37,7 +41,6 @@ AnnotationRegistry::registerLoader([$loader, 'loadClass']);
 ```
 
 ## 1.3 Setup the kernel
-
 Create a kernel which extends the Zicht base kernel (see
 https://github.com/zicht/symfony-util for more information). You will gain some
 benefits that will come up later in this tutorial. You can implement the
@@ -104,7 +107,7 @@ require_once __DIR__ . '/../app/bootstrap.php';
 (new AppKernel())->web();
 ```
 
-The `console` function is provided by [Zicht's base
+The `web` function is provided by [Zicht's base
 kernel](https://github.com/zicht/symfony-util).
 
 ### 1.7 Setup basic configuration
@@ -494,9 +497,51 @@ You can enable the admin bundles by configuring the following:
 
 ### Register the admin bundles in the kernel:
 
+```php
+    $ret = [
+        /* ... */
+        new Sonata\AdminBundle\SonataAdminBundle(),
+        new Sonata\BlockBundle\SonataBlockBundle(),
+        new Sonata\DoctrineORMAdminBundle\SonataDoctrineORMAdminBundle(),
+        new Sonata\CoreBundle\SonataCoreBundle(),
+        new Zicht\Bundle\AdminBundle\ZichtAdminBundle(),
+        /* ... */
+    ];
+```
 
+You will need a base config for the `sonata_block` bundle for it to run without
+complaining:
 
+#### `app/config/bundles/sonata_block.yml`
+```
+sonata_block:
+    default_contexts: [cms]
+    blocks:
+        sonata.admin.block.admin_list: ~
+```
 
+You will also need to add the sonata routing to the already existing
+`zicht_page` routing:
 
+#### `app/config/routing.yml`
+
+```
+# ....
+
+admin:
+    resource: '@SonataAdminBundle/Resources/config/routing/sonata_admin.xml'
+    prefix: /admin
+
+_sonata_admin:
+    resource: .
+    type: sonata_admin
+    prefix: /admin
+
+# ....
+```
+
+Now you should be able to open the /admin/dashboard route and you should see
+the MenuItem entity available for you to edit (because the ZichtMenuBundle does
+not require further configuration to work within Sonata).
 
 
