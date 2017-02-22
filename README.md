@@ -135,8 +135,7 @@ Add content versioning to your CMS
 #### [`zicht/moxiemanager-bundle`](https://github.com/zicht/moxiemanager-bundle)
 Integrate with [MoxieManager](http://www.moxiemanager.com/)
 
-### `zicht
-* If you have a license for MoxieManager, you can install zicht/moxie
+Note that you will need to supply the ZIP file to the moxiemanager yourself. 
 
 ## Hard external dependencies 
 * [`symfony/symfony`](https://github.com/symfony/symfony), currently supported
