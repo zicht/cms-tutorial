@@ -3,3 +3,9 @@ framework:
     router:
         resource: "%kernel.root_dir%/config/routing.yml"
         strict_requirements: %kernel.debug%
+
+    templating:
+        engines: ['twig']
+        assets_version: %assets_version%
+    default_locale:  en
+    session: ~
