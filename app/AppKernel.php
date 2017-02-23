@@ -14,6 +14,7 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
 
             new Zicht\Bundle\PageBundle\ZichtPageBundle(),
+            new Zicht\Bundle\UrlBundle\ZichtUrlBundle(),
 
             new Acme\SiteBundle\AcmeSiteBundle()
         ];

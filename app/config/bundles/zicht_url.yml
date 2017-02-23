@@ -1,0 +1,4 @@
+zicht_url:
+    aliasing: true
+#        enabled: true
+    admin: true
