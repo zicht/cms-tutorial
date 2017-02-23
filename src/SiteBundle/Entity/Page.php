@@ -22,6 +22,12 @@ abstract class Page extends BasePage
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $language = 'en';
+
     /**
      * @ORM\Column(type="string")
      */
@@ -50,5 +56,13 @@ abstract class Page extends BasePage
     public function getId()
     {
         return $this->id;
+    }
+    public function setLanguage($language)
+    {
+        $this->language = $language;
+    }
+    public function getLanguage()
+    {
+        return $this->language;
     }
 }
