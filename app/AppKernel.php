@@ -17,6 +17,7 @@ class AppKernel extends Kernel
             new Zicht\Bundle\UrlBundle\ZichtUrlBundle(),
 
             new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
+            new Knp\Bundle\MenuBundle\KnpMenuBundle(),
 
             new Acme\SiteBundle\AcmeSiteBundle()
         ];
