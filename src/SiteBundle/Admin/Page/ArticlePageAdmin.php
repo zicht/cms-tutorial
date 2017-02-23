@@ -4,8 +4,9 @@
  * @copyright Zicht Online <http://zicht.nl>
  */
 
-namespace Acme\SiteBundle\Admin;
+namespace Acme\SiteBundle\Admin\Page;
 
+use Acme\SiteBundle\Admin\PageAdmin;
 use Sonata\AdminBundle\Form\FormMapper;
 
 class ArticlePageAdmin extends PageAdmin

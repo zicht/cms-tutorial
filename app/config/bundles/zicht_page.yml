@@ -1,10 +1,10 @@
 zicht_page:
-    aliasing: true
+#    aliasing: true
     pageClass: 'Acme\SiteBundle\Entity\Page'
     contentItemClass: ''
     types:
         page:
-            article: Acme\SiteBundle\Entity\ArticlePage
+            article: Acme\SiteBundle\Entity\Page\ArticlePage
 
     admin:
         base:
