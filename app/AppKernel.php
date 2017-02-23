@@ -6,7 +6,7 @@ class AppKernel extends Kernel
 {
     public function registerBundles()
     {
-        return [
+        $ret = [
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new Symfony\Bundle\SecurityBundle\SecurityBundle(),
             new Symfony\Bundle\TwigBundle\TwigBundle(),
@@ -17,5 +17,11 @@ class AppKernel extends Kernel
 
             new Acme\SiteBundle\AcmeSiteBundle()
         ];
+
+        if ($this->getEnvironment() === 'development') {
+            $ret[] = new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle();
+        }
+    
+        return $ret;
     }
 }
