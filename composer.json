@@ -1,0 +1,16 @@
+{
+    "name": "zicht/cms-tutorial",
+    "description": "A tutorial for the Zicht CMS",
+    "type": "project",
+    "require": {
+        "zicht/cms": "^1.0"
+    },
+    "license": "CC",
+    "authors": [
+        {
+            "name": "Gerard van Helden",
+            "email": "gerard@zicht.nl"
+        }
+    ],
+    "minimum-stability": "stable"
+}
