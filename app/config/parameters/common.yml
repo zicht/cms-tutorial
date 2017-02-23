@@ -1,0 +1,7 @@
+parameters:
+    database_driver: pdo_mysql
+    database_port: 3306
+
+    locale: en
+    secret: # a secret you should generate yourself
+    assets_version: development
