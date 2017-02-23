@@ -33,8 +33,10 @@ abstract class Page extends BasePage
      */
     private $title = '';
     private $contentItems;
-    public function __construct()
+
+    public function __construct($title = '')
     {
+        $this->title = $title;
         $this->contentItems = new ArrayCollection();
     }
     public function getContentItems($region = null)
