@@ -11,6 +11,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Zicht\Bundle\FrameworkExtraBundle\Fixture\Builder;
+use Zicht\Bundle\MenuBundle\Entity\MenuItem;
 
 class SiteFixtures implements FixtureInterface, ContainerAwareInterface
 {
@@ -29,8 +30,10 @@ class SiteFixtures implements FixtureInterface, ContainerAwareInterface
     {
         $em = $this->container->get('doctrine')->getManager();
 
+        $pages = [];
         Builder::create('Acme\\SiteBundle\\Entity')
-            ->always(function ($object) use ($em) {
+            ->always(function ($object) use ($em, &$pages) {
+                $pages[$object->getTitle()]= $object;
                 $object->setLanguage('en');
                 $em->persist($object);
             })
@@ -54,21 +57,25 @@ class SiteFixtures implements FixtureInterface, ContainerAwareInterface
             ->end();
 
         $em->flush();
+
+        $urlProvider = $this->container->get('zicht_page.page_url_provider');
+
         Builder::create('Zicht\Bundle\MenuBundle\Entity')
-            ->always(function($object) use ($em) {
+            ->always(function(MenuItem $object) use ($em, $urlProvider, $pages) {
+                if (isset($pages[$object->getTitle()])) {
+                    $object->setPath($urlProvider->url($pages[$object->getTitle()]));
+                }
                 $em->persist($object);
             })
             ->MenuItem('main', '', 'main')
-            ->setLanguage('en')
-
-            ->MenuItem('Home', '/en/page/1', 'home')->end()
-            ->MenuItem('Products', '/en/page/2', '')
-            ->MenuItem('Product A', '/en/page/3', '')->end()
-            ->MenuItem('Product B', '/en/page/4', '')->end()
-            ->MenuItem('Product C', '/en/page/5', '')->end()
-            ->end()
-            ->MenuItem('Products', '/en/page/6', '')->end()
-
+                ->setLanguage('en')
+                    ->MenuItem('Home', null, 'home')->end()
+                    ->MenuItem('Products')
+                    ->MenuItem('Product A')->end()
+                    ->MenuItem('Product B')->end()
+                    ->MenuItem('Product C')->end()
+                ->end()
+                ->MenuItem('Contact', null)->end()
             ->end();
 
         $em->flush();
