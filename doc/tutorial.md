@@ -267,8 +267,21 @@ In `composer.json` add the following:
 }
 ```
 
-Then, add the files as they appear in `zicht/cms-tutorial/src`.
+and add the bundle file:
 
+#### `src/Acme/SiteBundle.php`
+
+```
+namespace Acme\SiteBundle;
+
+use Symfony\Component\HttpKernel\Bundle\Bundle;
+
+class AcmeSiteBundle extends Bundle
+{
+}
+```
+
+And register the bundle in your AppKernel.
 
 # 3. Configuring the Page bundle
 The page bundle provides a simple means of storing pages of any type in the
