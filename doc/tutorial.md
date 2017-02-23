@@ -418,6 +418,7 @@ So add the `DoctrineFixturesBundle` to your development kernel:
         return $ret;
 ```
 
+# 4.1 Create fixtures with the Fixture builder
 and add a fixture class to the correct namespace. The
 `ZichtFrameworkExtraBundle` contains a tool that can be useful if you want to
 create fixtures without writing too much code for it. This is called the
@@ -427,8 +428,71 @@ building an entity. Read the
 In the example the builder is used, because it is particularly useful for
 tree-like structures (such as a menu).
 
+https://github.com/zicht/cms-tutorial/blob/4.1/src/SiteBundle/DataFixtures/ORM/SiteFixtures.php#L32
 
-# 5. Configuring the `zicht/menu-bundle`
+Note that for building fixtures it is extra useful to have constructor defaults in the entity:
+
+https://github.com/zicht/cms-tutorial/blob/4.1/src/SiteBundle/Entity/Page.php#L37
+
+# 5. Configuring the `zicht/url-bundle`
+
+## 5.1 enable the url bundle
+
+Enable the url bundle in your AppKernel, by adding it to the registerBundles() call. 
+
+Then, add the following config:
+
+#### `app/config/bundles/zicht_url.yml`
+
+```
+zicht_page:
+    aliasing: true
+```
+
+This enables one of the key features of the url bundle. As discussed before in 3.7, 
+aliasing is the feature that allows you to configure your own way of showing URL's
+to the client for any type of object.
+
+## 5.2 enable aliasing for pages
+
+Now, the Page bundle implements aliasing for pages. So, let's enable aliasing in 
+the page bundle:
+
+#### `app/config/bundles/zicht_page.yml`
+```
+zicht_page:
+    aliasing: true
+```
+
+The default aliasing is based on the title of the page and simply prefixes it with 
+a slash. You can generate aliases for all pages using the `zicht:page:alias` command.
+
+Assuming you have the fixtures loaded, you will now have a few aliased pages. Every
+time you reload the fixtures, the aliases will be regenerated, because the url bundle
+hooks into the Doctrine events to create aliases and remove them when the objects
+they point to are removed or created. 
+
+There are different options for the behavior when updating an object. You can also
+have multiple aliases per object. For more info on the details of generating aliases
+and tweaking this to your needs, see the 
+[documentation of zicht/url-bundle](https://github.com/zicht/url-bundle)
+
+*Note* aliasing is only done for public pages. Since we do not have security 
+configured yet, all pages are considered public.
+
+## 5.3 Configure a home page
+
+By far the easiest approach to make this work is simply updating the url_alias to
+point to '/' in stead of '/home':
+
+```sql
+UPDATE url_alias SET public_url='/' WHERE public_url='/home'
+```
+
+There are several other approaches which you can use, but they all involve 
+configuration.
+
+# 6. Configuring the `zicht/menu-bundle`
 Let's add the ZichtMenuBundle to the app kernel, and add it's config. By
 default the menu builder simply queries the root items from the menuitem table
 and select them using the Gedmo "nested set" implementation. This is a very
@@ -442,7 +506,7 @@ MySQL backend in an efficient manner.
 So, to get the ZichtMenuBundle working, you will need two other bundles
 configured as well:
 
-## 5.1 StofDoctrineExtensionsBundle
+## 6.1 StofDoctrineExtensionsBundle
 
 Add the StofDoctrineExtensionsBundle() to `AppKernel::registerBundles()` and
 add the following configuration.
@@ -459,12 +523,12 @@ This will make the "Tree" annotations work, which are used in the MenuBundle to
 store NestedSet data about all nodes. Read more about what a [nested
 set](https://en.wikipedia.org/wiki/Nested_set_model) is on Wikipedia
 
-## 5.2 KnpMenuBundle
+## 6.2 KnpMenuBundle
 
 You only need to register this bundle, nothing more. Read more about the [Knp
 menu features here](https://github.com/KnpLabs/KnpMenuBundle).
 
-## 5.3 `zicht_menu` config
+## 6.3 `zicht_menu` config
 Finally, you will need to add a config identifying which menus you have
 prepared.
 
@@ -475,10 +539,9 @@ zicht_menu:
     menus: []
 ```
 
-## 5.4 Create the menu
+## 6.4 Create the menu
 Assuming you have set up the fixtures, you can configure a menu fairly easily
-by creating `MenuItem` entities and persisting them. See the cms-tutorial
-repository for a working example.
+by creating `MenuItem` entities and persisting them. 
 
 ```
 class MenuFixtures implements FixtureInterface, ContainerAwareInterface
@@ -508,12 +571,14 @@ class MenuFixtures implements FixtureInterface, ContainerAwareInterface
 }
 ```
 
-The example from the tutorial repository utilizes the fixture builder, which is
+The example from the source repository utilizes the fixture builder, which is
 documented more thoroughly in
-[zicht/framework-extra-bundle](https://github.com/zicht/framework-extra-bundle).
+[zicht/framework-extra-bundle](https://github.com/zicht/framework-extra-bundle). 
+See also chapter 4 on configuring fixtures.
 
+See https://github.com/zicht/cms-tutorial/blob/6.4/src/SiteBundle/DataFixtures/ORM/SiteFixtures.php#L57
 
-## 5.5 add the menu to the bundle config
+## 6.5 add the menu to the bundle config
 To identify that you want to use the `main` root item as a menu, you need to
 configure this:
 
@@ -522,7 +587,7 @@ zicht_menu:
     menus: ['main']
 ```
 
-## 5.6 render the menu
+## 6.6 render the menu
 If you have load the fixtures you can now render the menu in your template
 using the knp menu function
 
@@ -536,7 +601,7 @@ Read the documentation on the [knp
 menu](http://symfony.com/doc/master/bundles/KnpMenuBundle/index.html) library
 for how to customize your rendering.
 
-# 6. "Well, how about those admin screens?"
+# 7. "Well, how about those admin screens?"
 These few steps show you how to very quickly set up a database-backed website
 which you can manage in any way you seem fit. You can hook up pretty much any
 admin that can work with Doctrine models, write your own forms, etc. But if you
@@ -547,7 +612,7 @@ admin](https://sonata-project.org/bundles/admin/2-3/doc/index.html) libraries,
 currently version 2.3. Newer versions of the zicht/cms will likely support
 higher versions of sonata.
 
-## 6.1 Enable the admin bundles
+## 7.1 Enable the admin bundles
 You can enable the admin bundles by configuring the following:
 
 ### Register the admin bundles in the kernel:
@@ -599,7 +664,7 @@ Now you should be able to open the /admin/dashboard route and you should see
 the MenuItem entity available for you to edit (because the ZichtMenuBundle does
 not require further configuration to work within Sonata).
 
-### 6.2 enable the page admins
+### 7.2 enable the page admins
 You will need to configure admin services for your pages. The approach of the 
 page bundle is that all page types have their own admin, but they all extend
 the same 'base page admin'. This goes for content items as well. 
@@ -764,9 +829,5 @@ The interesting parts are:
 * [`app/config/bundles/zicht_page.yml`](https://github.com/zicht/cms-tutorial/tree/6.2-working-content-items/app/config/bundles/zicht_page.yml)
 * [`src/SiteBundle/Resources/config/admin.xml`](https://github.com/zicht/cms-tutorial/tree/6.2-working-content-items/src/SiteBundle/Resources/config/admin.xml)
 
-### 6.3 enable the url admins
+### 7.3 enable the url admins
 Toggle the url-admin flag:
-
-
-
-
