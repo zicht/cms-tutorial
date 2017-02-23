@@ -1,13 +1,40 @@
+# Tutorial
+
+## When to use this tutorial
+If you want to get to know the bundles and how to work together.
+
+## What this tutorial is not
+This is not an end user tutorial of how to use the CMS when it is running. The
+Zicht CMS is highly customizable, so there is not much common to tell about any
+of the CMS'es.
+
+## How to use this tutorial
 The most effective way of getting to know Zicht CMS is to follow the tutorial
-for installation. However, if you want to do a quickstart, you're better off
-installing `symfony/standard-edition` (be sure to install the currently
-supported LTS version `2.7`) and install the `zicht/site-bundle` base template.
+for installation and try to build it up yourself. If you want to take that
+approach, You should reserve at least a few hours of time to do the entire
+tutorial, depending on your experience with Symfony.
 
-Wondering how we run with symfony development? Checkout [decorum
-symfony best practices](https://github.com/zicht/decorum). 
+However, it is probably better to clone this repository or simply compare all
+of the tags for each of the steps.
 
+For example, if you want to see what changes were made between 4.0 and 4.2, you
+can inspect the changes on github like this:
 
-This is the more detailed (and thus explanatory) approach:
+https://github.com/zicht/cms-tutorial/compare/4.0...4.2
+
+You can also refer to all of the releases in
+https://github.com/zicht/cms-tutorial/releases and compare them to see what was
+needed to get from one point to another. The numbers in the tags refer to the
+sections of the tutorial, namely what the result should be at the end of that
+section.
+
+However, if you are looking for a quickstart, you can best clone this repo at
+any tag that you want to use, and start hacking away, or simply add `zicht/cms` as
+a requirement to your project and copy/paste the configurations from any tag
+you wish to use.
+
+Well then, if you're still reading, you're probably interesting in starting
+this.  Let's start!
 
 # Step 1: setting up a symfony sandbox
 Setting up Symfony sandbox is easier than you may think, especially if you know
@@ -372,9 +399,10 @@ and add a fixture class to the correct namespace. The
 `ZichtFrameworkExtraBundle` contains a tool that can be useful if you want to
 create fixtures without writing too much code for it. This is called the
 fixture builder and works on the basis of a principle that when you are
-building an entity. Read the [documentation](https://github.com/zicht/framework-extra-bundle)
-for more info. In the example the builder is used, because it is particularly
-useful for tree-like structures (such as a menu).
+building an entity. Read the
+[documentation](https://github.com/zicht/framework-extra-bundle) for more info.
+In the example the builder is used, because it is particularly useful for
+tree-like structures (such as a menu).
 
 # 5. Configuring the `zicht/menu-bundle`
 Let's add the ZichtMenuBundle to the app kernel, and add it's config. By
@@ -436,7 +464,9 @@ class MenuFixtures implements FixtureInterface, ContainerAwareInterface
         $em = $this->container->get('doctrine')->getManager();
         
         $rootItem = new MenuItem('main', '', 'main');
-        $rootItem->setLanguage('en'); // root items need a language, ascendants inherit the language from the root.
+        
+        // root items need a language, ascendants inherit the language from the root.
+        $rootItem->setLanguage('en'); 
 
         $child1 = new MenuItem('Home', '/');
         $rootItem->addChild($child1);
@@ -460,7 +490,8 @@ documented more thoroughly in
 
 
 ## 5.5 add the menu to the bundle config
-To identify that you want to use the `main` root item as a menu, you need to configure this:
+To identify that you want to use the `main` root item as a menu, you need to
+configure this:
 
 ```
 zicht_menu:
@@ -543,5 +574,175 @@ _sonata_admin:
 Now you should be able to open the /admin/dashboard route and you should see
 the MenuItem entity available for you to edit (because the ZichtMenuBundle does
 not require further configuration to work within Sonata).
+
+### 6.2 enable the page admins
+You will need to configure admin services for your pages. The approach of the 
+page bundle is that all page types have their own admin, but they all extend
+the same 'base page admin'. This goes for content items as well. 
+
+Upon initialization of the bundle's configuration, when the `admin` flag is 
+enabled, the configuration for each of the configured classes is generated.
+Again, you are of course not obliged to use this, it is a convenience.
+
+Each of the class names is mapped to an Admin class. At this point, you
+probably want to move your Page and ContentItem classes to their own namespace,
+because the list of classes will probably grow.
+
+#### Move the Page classes to their own namespace
+A good approach for this is to have you base class available at:
+`[Bundle]\Entity\Page` and all of it's derived classes at
+`[Bundle]\Entity\Page\DerivedPage`. So, for the above example, the class should
+be moved from `Acme\SiteBundle\Entity\ArticlePage` to
+`Acme\SiteBundle\Entity\Page\ArticlePage`. If you have created another page
+type, move that to that namespace as well. 
+
+#### Add base admin implementation
+
+It will prove useful to have a base page admin you will use as a basis for all
+your page admins:
+
+```
+namespace Acme\SiteBundle\Admin;
+
+use Zicht\Bundle\PageBundle\Admin\PageAdmin as BasePageAdmin;
+
+class PageAdmin extends BasePageAdmin
+{
+}
+```
+
+You can use this to add application-wide customizations to the admin. For
+example, you could use this to add a custom field that you have for all pages,
+or you could use this to configure the page overviews.
+
+#### Configure a DI extension
+At this point, we're going to use XML for service definitions. You can,
+however, map this to your own preferred configuration.
+
+We'll need a DI extension:
+
+```
+namespace Acme\SiteBundle\DependencyInjection;
+
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection as DI;
+
+class AcmeSiteExtension extends DI\Extension\Extension
+{
+    public function load(array $configs, DI\ContainerBuilder $container)
+    {
+        $loader = new DI\Loader\XmlFileLoader(
+            $container, 
+            new FileLocator(__DIR__.'/../Resources/config')
+        );
+
+        $loader->load('admin.xml');
+    }
+}
+```
+... and the admin.xml:
+
+```
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <!-- admin services go here -->
+    </services>
+</container>
+```
+
+Now we will need the admin base service. Though this is not strictly all
+required, this is the most common configuration you will use. The configuration
+options for the `label_translator_strategy` and `setTranslationDomain` are best
+practices we use for translations across all of our projects. Of course, you
+can configure this to your own needs (that is why you need to configure it in
+the first place: to have as much freedom as possible)
+
+```xml
+<service id="acme.admin.page" class="Acme\SiteBundle\Admin\PageAdmin">
+    <tag name="sonata.admin" manager_type="orm" group="Structure" 
+         label="Pages" label_translator_strategy="sonata.admin.label.strategy.underscore"/>
+    <argument/>
+    <argument>Acme\SiteBundle\Entity\Page</argument>
+    <argument>ZichtAdminBundle:CRUD</argument>
+    <argument>acme.admin.content_item</argument>
+
+    <call method="setPageManager">
+        <argument type="service" id="zicht_page.page_manager"/>
+    </call>
+    <call method="setUrlProvider">
+        <argument type="service" id="zicht_url.provider"/>
+    </call>
+    <call method="setMenuManager">
+        <argument type="service" id="zicht_menu.menu_manager"/>
+    </call>
+    <call method="setTranslationDomain">
+        <argument>admin</argument>
+    </call>
+</service>
+```
+
+The service code `acme.admin.page` is the code you will need to configure in
+the `zicht_page` configuration later on.
+
+#### Add concrete implementations
+The `GenerateAdminServicesCompilerPass` generated page admins for each of the
+classes that are available. The name mapping simply replaces the 'Entity'
+subnamespace with 'Admin' and adds the 'Admin' suffix. So, in our example, the
+admin class name for the ArticlePage would become: 
+
+```
+Acme\SiteBundle\Admin\Page\ArticlePageAdmin
+```
+
+Implement this by extending your base admin:
+
+```
+namespace Acme\SiteBundle\Admin\Page;
+
+use Acme\SiteBundle\Admin\PageAdmin;
+use Sonata\AdminBundle\Form\FormMapper;
+
+class ArticlePageAdmin extends PageAdmin
+{
+}
+```
+
+#### Configure the page admin base
+
+In the `zicht_page` bundle configuration you need to refer to `acme.admin.page`
+service code to inform the page bundle you want to use that as a basis for your
+other definitions:
+
+```
+zicht_page:
+    admin:
+        base:
+            page: acme.admin.page
+```    
+
+
+
+#### Content items: rinse/repeat
+Repeat the steps above for the content items. You will need two separate admin
+implementations, one which is used at the 'collection' type where you can add
+and sort contentitems to a page, and one that is used as the base admin for the
+"details" of the content item.
+
+Check out the source code of this repository at the tag
+[`6.2-working-content-items`](https://github.com/zicht/cms-tutorial/tree/6.2-working-content-items/).
+
+The interesting parts are:
+* [`app/config/bundles/zicht_page.yml`](https://github.com/zicht/cms-tutorial/tree/6.2-working-content-items/app/config/bundles/zicht_page.yml)
+* [`src/SiteBundle/Resources/config/admin.xml`](https://github.com/zicht/cms-tutorial/tree/6.2-working-content-items/src/SiteBundle/Resources/config/admin.xml)
+
+### 6.3 enable the url admins
+Toggle the url-admin flag:
+
+
 
 
