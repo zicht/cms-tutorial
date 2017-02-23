@@ -1,7 +1,7 @@
-parameters:
+parameters:
     database_driver: pdo_mysql
     database_port: 3306
 
     locale: en
-    secret: # a secret you should generate yourself
+    secret: "this is not really secret" 
     assets_version: development

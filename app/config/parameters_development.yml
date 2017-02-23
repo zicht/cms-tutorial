@@ -1,8 +1,8 @@
-imports:
+imports:
     - resource: parameters/common.yml
 
 parameters:
-    database_host:  # your mysql host
-    database_user:      # your mysql user
-    database_password:  # your mysql password
-    database_name:      # your mysql database name
+    database_host: mysql
+    database_user: dev 
+    database_password: 
+    database_name: cms_tutorial
