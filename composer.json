@@ -12,5 +12,10 @@
             "email": "gerard@zicht.nl"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "Acme\\": "src/"
+        }
+    },
     "minimum-stability": "stable"
 }
