@@ -608,6 +608,16 @@ before it is sent to the client. It doesn't matter if the url's come from the
 menu, from your hardcoded urls in your template, or from user-managed content,
 they will be aliased with the correct current url.
 
+## 6.7 Make the fixtures more robust
+Since every time you reload the fixtures, your pages might get new ID's (and
+hard coding ID's is nearly always a bad idea, you can utilize the url provider
+to generate the correct urls in the Menu for each of the referred pages.
+
+A simple trick for this is to introduce a pages array which you fill in the
+one builder, and read out in the next one. Check out:
+
+https://github.com/zicht/cms-tutorial/compare/6.6...6.7
+
 # 7. "Well, how about those admin screens?"
 These few steps show you how to very quickly set up a database-backed website
 which you can manage in any way you seem fit. You can hook up pretty much any
