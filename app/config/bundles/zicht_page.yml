@@ -1,4 +1,6 @@
 zicht_page:
+    aliasing: true
+
     pageClass: 'Acme\SiteBundle\Entity\Page'
     contentItemClass: ''
     types:
