@@ -601,6 +601,13 @@ Read the documentation on the [knp
 menu](http://symfony.com/doc/master/bundles/KnpMenuBundle/index.html) library
 for how to customize your rendering.
 
+Note that the rendered HTML source code shows **aliased** urls. Even though 
+your database still contains unaliased urls. There is no magic, it is 
+implemented in a Kernel listener which simply rewrites all the HTML right 
+before it is sent to the client. It doesn't matter if the url's come from the
+menu, from your hardcoded urls in your template, or from user-managed content,
+they will be aliased with the correct current url.
+
 # 7. "Well, how about those admin screens?"
 These few steps show you how to very quickly set up a database-backed website
 which you can manage in any way you seem fit. You can hook up pretty much any
