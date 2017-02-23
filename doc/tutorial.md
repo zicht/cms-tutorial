@@ -17,10 +17,10 @@ tutorial, depending on your experience with Symfony.
 However, it is probably better to clone this repository or simply compare all
 of the tags for each of the steps.
 
-For example, if you want to see what changes were made between 4.0 and 4.2, you
+For example, if you want to see what changes were made between 1.7 and 3.2, you
 can inspect the changes on github like this:
 
-https://github.com/zicht/cms-tutorial/compare/4.0...4.2
+https://github.com/zicht/cms-tutorial/compare/1.7...3.2
 
 You can also refer to all of the releases in
 https://github.com/zicht/cms-tutorial/releases and compare them to see what was
@@ -355,26 +355,26 @@ doctrine config.
 
 See the source code for this tutorial how these entities are configured:
 
-* https://github.com/zicht/cms-tutorial/tree/page-bundle/src/SiteBundle/Entity
-
-At this point, it will prove useful to checkout the source code of
-`zicht/cms-tutorial` and inspect the contents of tag `page-bundle`, which has a
-few basics in place and see if you can get it to working. *Tip* you can use the
-`config_local.yml` as documented above in case you want to configure something
-custom without affecting the git-managed source tree.
+* https://github.com/zicht/cms-tutorial/tree/3.4/src/SiteBundle/Entity
 
 ## 3.5 Add the template
+To get twig to work, we need to tweak the framework configuration a bit.
+
 See
-https://github.com/zicht/cms-tutorial/blob/page-bundle/src/SiteBundle/Resources/views/Page/article.html.twig
+https://github.com/zicht/cms-tutorial/blob/3.5/src/SiteBundle/Resources/views/Page/article.html.twig
 for an example of the template. The name of the template is derived from the
 `PageManager::getTemplate()` method, which defaults to a strategy where the
-bundle name of the entity is inferred, and `:Page:{type}' is added to the
-bundle name. You can easily override this by either extending the page manager,
-or overloading the `getTemplateName` method.
+bundle name of the entity is inferred, and `:Page:` is added to the, and finally the
+Page's getTemplateName() is called. You can easily override this by either extending the page manager,
+or overloading the `getTemplateName` method in your page instance. It might be helpful, for example to have different templates for the same type of page, based on a mapped field.
 
 ## 3.6 Add a page
-In MySQL, execute the queries as described in
-https://github.com/zicht/cms-tutorial/blob/page-bundle/setup.sql
+In MySQL, execute the following queries:
+
+```sql
+INSERT INTO page(id, title, type) VALUES(1, 'Home', 'article');
+INSERT INTO article_page(id, content) VALUES(1, '<p>Welcome!</p>');
+```
 
 This creates a "JOINED" model, with id 1. Read more about how inheritance
 mapping works in the the [doctrine manual about inheritance
@@ -382,16 +382,26 @@ mapping](http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/refere
 
 As soon as these steps are done, point your browser to the running application
 and open the url `/en/page/1`. This will show you the page with title 'Home'
-and content "Welcome :)".
+and content "Welcome :)". Yay!
 
 #### Exercise
 Try adding an extra type of page. Here are the steps:
 
 1. Create an extra entity class
-2. Add it to the inheritance map of the base Page
-3. Add it to the `zicht_page.yml` configuration
-4. Create a migration for the changes in the database
+2. Add it to the `zicht_page.yml` configuration
+3. Create a migration for the changes in the database
    (doctrine:migrations:diff) and apply the migration
+   
+# 3.7 Add a language property
+The keen reader probably noticed the query above missing a language property. 
+This is a good time to explain to you that the language property is only important for one thing: routing a page. You can check that opening the page on the url `/fr/page/1` will also work. This is because the `fr` or `en` part of the route matches the default symfony `_locale` parameter which has no "real" relation to the page's language property. Since all pages get a new id, the language is not important to identify the page. Considering that if you always route to pages including the correct locale, it is irrelevant for the controller to know which language the page has. This simplifies things greatly. This also means that you *must* include the locale parameter in the route for the symfony locale to be set. 
+
+This has two consequences:
+* When you want to route to a page, you must always include it's locale. 
+  This is where the **URL providers** kick in, and this is something we will get 
+  to later in this tutorial (configuring the url bundle)
+* The locale is always included in the url for a page. But you don't always want to show 
+  it as such. This is where **aliasing** kicks in; also more on that later.
 
 # 4. Using fixtures 
 Since it is really tedious to write fixture data in SQL files (though it is
@@ -416,6 +426,7 @@ building an entity. Read the
 [documentation](https://github.com/zicht/framework-extra-bundle) for more info.
 In the example the builder is used, because it is particularly useful for
 tree-like structures (such as a menu).
+
 
 # 5. Configuring the `zicht/menu-bundle`
 Let's add the ZichtMenuBundle to the app kernel, and add it's config. By
