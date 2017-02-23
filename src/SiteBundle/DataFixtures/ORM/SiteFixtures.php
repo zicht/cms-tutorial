@@ -54,5 +54,23 @@ class SiteFixtures implements FixtureInterface, ContainerAwareInterface
             ->end();
 
         $em->flush();
+        Builder::create('Zicht\Bundle\MenuBundle\Entity')
+            ->always(function($object) use ($em) {
+                $em->persist($object);
+            })
+            ->MenuItem('main', '', 'main')
+            ->setLanguage('en')
+
+            ->MenuItem('Home', '/en/page/1', 'home')->end()
+            ->MenuItem('Products', '/en/page/2', '')
+            ->MenuItem('Product A', '/en/page/3', '')->end()
+            ->MenuItem('Product B', '/en/page/4', '')->end()
+            ->MenuItem('Product C', '/en/page/5', '')->end()
+            ->end()
+            ->MenuItem('Products', '/en/page/6', '')->end()
+
+            ->end();
+
+        $em->flush();
     }
 }
