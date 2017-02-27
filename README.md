@@ -146,3 +146,6 @@ Note that you will need to supply the ZIP file to the moxiemanager yourself.
 Please report issues for documentation in `zicht/cms-tutorial` and report
 issues regarding the dependencies in `zicht/cms`. Any other issue can be
 reported in the related library or bundle repository.
+
+## Continued reading
+Continue by following the [tutorial](doc/tutorial.md)
