@@ -6,8 +6,11 @@ zicht_page:
     types:
         page:
             article: Acme\SiteBundle\Entity\Page\ArticlePage
+        contentItem:
+            text:    Acme\SiteBundle\Entity\ContentItem\Text
 
     admin:
         base:
             page: acme.admin.page
+            contentItem: acme.admin.content_item
 
