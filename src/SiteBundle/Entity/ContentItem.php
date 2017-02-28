@@ -23,4 +23,73 @@ class ContentItem extends BaseContentItem
      * @ORM\Column(type="integer")
      */
     private $weight = 0;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Acme\SiteBundle\Entity\Page", inversedBy="contentItems")
+     */
+    private $page;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $region = null;
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getWeight()
+    {
+        return $this->weight;
+    }
+
+    /**
+     * @param mixed $weight
+     */
+    public function setWeight($weight)
+    {
+        $this->weight = $weight;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPage()
+    {
+        return $this->page;
+    }
+
+    /**
+     * @param mixed $page
+     */
+    public function setPage($page)
+    {
+        $this->page = $page;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRegion()
+    {
+        return $this->region;
+    }
+
+    /**
+     * @param mixed $region
+     */
+    public function setRegion($region)
+    {
+        $this->region = $region;
+    }
+
+
+
 }

@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Zicht\Bundle\PageBundle\Entity\Page as BasePage;
 use Zicht\Bundle\PageBundle\Model\ContentItemInterface;
+
 /**
  * @ORM\ChangeTrackingPolicy("DEFERRED_EXPLICIT")
  * @ORM\Entity
@@ -33,7 +34,7 @@ abstract class Page extends BasePage
      */
     private $title = '';
 
-  /**
+   /**
      * @var ArrayCollection $contentItems
      *
      * @ORM\OneToMany(
@@ -66,6 +67,10 @@ abstract class Page extends BasePage
     public function getTitle()
     {
         return $this->title;
+    }
+    public function setTitle($title)
+    {
+        $this->title = $title;
     }
     public function getId()
     {

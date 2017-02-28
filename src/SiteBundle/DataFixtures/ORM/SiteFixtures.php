@@ -31,14 +31,19 @@ class SiteFixtures implements FixtureInterface, ContainerAwareInterface
         $em = $this->container->get('doctrine')->getManager();
 
         $pages = [];
-        Builder::create('Acme\\SiteBundle\\Entity\\Page')
+        Builder::create(['Acme\\SiteBundle\\Entity\\Page', 'Acme\\SiteBundle\\Entity\\ContentItem'])
             ->always(function ($object) use ($em, &$pages) {
-                $pages[$object->getTitle()]= $object;
-                $object->setLanguage('en');
+                if ($object instanceof Page) {
+                    $pages[$object->getTitle()]= $object;
+                    $object->setLanguage('en');
+                }
                 $em->persist($object);
             })
             ->ArticlePage('Home')
                 ->setContent('<p>Welcome :)</p>')
+                ->Text()
+                    ->setRegion('right')
+                ->end()
             ->end()
             ->ArticlePage('Products')
                 ->setContent('<p>We also have cool products</p>')

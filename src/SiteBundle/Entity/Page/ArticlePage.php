@@ -7,8 +7,10 @@
 namespace Acme\SiteBundle\Entity\Page;
 
 
+use Acme\SiteBundle\Entity\ContentItem;
 use Acme\SiteBundle\Entity\Page as BasePage;
 use Doctrine\ORM\Mapping as ORM;
+use Zicht\Bundle\PageBundle\Model\ContentItemMatrix;
 
 /**
  * @ORM\Entity
@@ -34,5 +36,13 @@ class ArticlePage extends BasePage
     public function setContent($content)
     {
         $this->content = $content;
+    }
+
+
+    public function getContentItemMatrix()
+    {
+        return ContentItemMatrix::create(ContentItem::class)
+            ->region('right')
+                ->type('Text');
     }
 }

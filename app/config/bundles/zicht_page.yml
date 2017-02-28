@@ -12,5 +12,5 @@ zicht_page:
     admin:
         base:
             page: acme.admin.page
-            contentItem: acme.admin.content_item
+            contentItem: acme.admin.content_item_detail
 
