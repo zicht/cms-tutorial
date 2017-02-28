@@ -26,6 +26,8 @@ class AppKernel extends Kernel
             new Sonata\CoreBundle\SonataCoreBundle(),
             new Zicht\Bundle\AdminBundle\ZichtAdminBundle(),
 
+            new Zicht\Bundle\FrameworkExtraBundle\ZichtFrameworkExtraBundle(),
+
             new Acme\SiteBundle\AcmeSiteBundle()
         ];
 
