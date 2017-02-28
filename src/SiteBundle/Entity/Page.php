@@ -32,7 +32,19 @@ abstract class Page extends BasePage
      * @ORM\Column(type="string")
      */
     private $title = '';
-    private $contentItems;
+
+  /**
+     * @var ArrayCollection $contentItems
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="ContentItem", 
+     *     mappedBy="page", 
+     *     cascade={"persist", "remove", "merge"}, 
+     *     orphanRemoval=true
+     * )
+     * @ORM\OrderBy({"weight" = "ASC"})
+     */
+    protected $contentItems;
 
     public function __construct($title = '')
     {

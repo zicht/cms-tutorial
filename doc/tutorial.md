@@ -692,12 +692,10 @@ security:
                 realm: 'Secured Area'
 ```
 
-*Note*: This is the bare minimum for sonata to work. Obviously, in most cases
-you will want to configure some users and roles that you will want to grant or
-deny access. It is beyond the scope of this tutorial to configure this, as it
-is part of Symfony. 
-
-As a general rule, we always use `unanimous` as the access decision manager.
+This is the bare minimum for sonata to work. Obviously, in most cases you will
+want to configure some users and roles that you will want to grant or deny
+access. It is beyond the scope of this tutorial to configure this, as it is
+part of Symfony's core. We will configure that in 7.4.
 
 You will also need to add the sonata routing to the already existing
 `zicht_page` routing:
@@ -723,7 +721,78 @@ Now you should be able to open the /admin/dashboard route and you should see
 the MenuItem entity available for you to edit (because the ZichtMenuBundle does
 not require further configuration to work within Sonata).
 
-### 7.2 enable the page admins
+
+### 7.2 move the Page classes to their own namespace
+Since we will be introducing Admin classes for all types of pages later, it is 
+good practice to move the classes to their own namespace.
+
+A good approach for this is to have you base class available at:
+`[Bundle]\Entity\Page` and all of it's derived classes at
+`[Bundle]\Entity\Page\DerivedPage`. So, for the above example, the class should
+be moved from `Acme\SiteBundle\Entity\ArticlePage` to
+`Acme\SiteBundle\Entity\Page\ArticlePage`. If you have created another page
+type, move that to that namespace as well. 
+
+
+### 7.3 set page "public"
+By default, the PageInterface has an `isPublic` method that is used to
+distinguish between pages that are shown to the public, and pages that aren't.
+You can implement your own logic in it, but as a general approach, it usually
+is better to create separate voters for whatever rules you impose. The default
+voter that is registered, denies access if a Page is not public, and you are
+not logged in.
+
+So if you now visit `/home`, you will get an HTTP basic authentication popup,
+because you are not allowed to see the page. The base implementation for
+pages returns `false`.
+
+The obvious approach for this is to introduce a boolean field on the base page
+class and have it managed by doctrine. For the time being though, we will
+simply consider all pages public.
+
+### 7.4 add an `/admin` restriction
+
+#### `app/config/bundles/security.yml`
+
+All you really need is an access restriction on the `/admin` path:
+
+```
+security:
+    # ...
+    access_control:
+        - { path: ^/admin, roles: ROLE_ADMIN }
+```
+
+Depending on how you plan to integrate your user management you need to
+configure your `providers` section. The easiest solution is to add a plain-text
+password to your security configuration. This is obviously not the most secure
+way, but for the purposes of this tutorial, it will suffice.
+
+*Tip*: if you use plain text passwords, always use a password that is very
+easy. This will remind you of the fact that it is still insecure and needs
+proper configuration.
+
+```
+security:
+    # ...
+    providers:
+        in_memory:
+            memory:
+                users:
+                    admin: { password: "1", roles: ["ROLE_ADMIN"] }
+    # ...
+```
+
+#### Integrate user and role management
+You can use [zicht/user-bundle](https://github.com/zicht/user-bundle) for a
+pragmatic approach to user management in the CMS. Of course, if you prefer to use
+another bundle, such as FOSUserBundle or the KunstmaanUserManagementBundle that
+is totally up to you.
+
+It's configuration is beyond the scope of this tutorial. Just follow the
+instructions in the README if you wish to use the `zicht/user-bundle`.
+
+### 7.5 enable the page admins
 You will need to configure admin services for your pages. The approach of the 
 page bundle is that all page types have their own admin, but they all extend
 the same 'base page admin'. This goes for content items as well. 
@@ -736,15 +805,7 @@ Each of the class names is mapped to an Admin class. At this point, you
 probably want to move your Page and ContentItem classes to their own namespace,
 because the list of classes will probably grow.
 
-#### Move the Page classes to their own namespace
-A good approach for this is to have you base class available at:
-`[Bundle]\Entity\Page` and all of it's derived classes at
-`[Bundle]\Entity\Page\DerivedPage`. So, for the above example, the class should
-be moved from `Acme\SiteBundle\Entity\ArticlePage` to
-`Acme\SiteBundle\Entity\Page\ArticlePage`. If you have created another page
-type, move that to that namespace as well. 
-
-#### Add base admin implementation
+#### 7.5.1 Add base admin implementation
 
 It will prove useful to have a base page admin you will use as a basis for all
 your page admins:
@@ -763,7 +824,7 @@ You can use this to add application-wide customizations to the admin. For
 example, you could use this to add a custom field that you have for all pages,
 or you could use this to configure the page overviews.
 
-#### Configure a DI extension
+#### 7.5.2 Configure a DI extension
 At this point, we're going to use XML for service definitions. You can,
 however, map this to your own preferred configuration.
 
@@ -788,7 +849,18 @@ class AcmeSiteExtension extends DI\Extension\Extension
     }
 }
 ```
-... and the admin.xml:
+
+#### 7.5.3 configure an admin base service
+
+We usually split up admin configuration for the sake of being able to use split
+configurations for separate parts of your application. In other words, not in all
+incarnations of your bundle, you will want the admin part to be loaded. You
+could, for example, only load the admin classes if the SonataAdminBundle is enabled.
+
+See [zicht/symfony-util](https://github.com/zicht/symfony-util)'s documentation
+on how to use split configs. 
+
+##### `src/SiteBundle/Resources/config/admin.xml`
 
 ```
 <?xml version="1.0" ?>
@@ -808,7 +880,7 @@ required, this is the most common configuration you will use. The configuration
 options for the `label_translator_strategy` and `setTranslationDomain` are best
 practices we use for translations across all of our projects. Of course, you
 can configure this to your own needs (that is why you need to configure it in
-the first place: to have as much freedom as possible)
+the first place: to have as much freedom as possible).
 
 ```xml
 <service id="acme.admin.page" class="Acme\SiteBundle\Admin\PageAdmin">
@@ -834,10 +906,27 @@ the first place: to have as much freedom as possible)
 </service>
 ```
 
-The service code `acme.admin.page` is the code you will need to configure in
-the `zicht_page` configuration later on.
+#### Configure the page admin base
 
-#### Add concrete implementations
+In the `zicht_page` bundle configuration you need to refer to `acme.admin.page`
+service code to inform the page bundle you want to use that as a basis for your
+other definitions:
+
+```
+zicht_page:
+    admin:
+        base:
+            page: acme.admin.page
+```    
+
+#### 7.5.4 Add concrete implementations
+When running `app/console`, you will see a message informing you that the
+`ArticlePageAdmin` is not found:
+
+> The PageBundle was unable to create a service definition for
+> Acme\SiteBundle\Entity\Page\ArticlePage because the associated class
+> Acme\SiteBundle\Admin\Page\ArticlePageAdmin was not found  
+
 The `GenerateAdminServicesCompilerPass` generated page admins for each of the
 classes that are available. The name mapping simply replaces the 'Entity'
 subnamespace with 'Admin' and adds the 'Admin' suffix. So, in our example, the
@@ -860,33 +949,24 @@ class ArticlePageAdmin extends PageAdmin
 }
 ```
 
-#### Configure the page admin base
+### 7.6 Content items: rinse/repeat
+More or less the same steps are needed for content items:
 
-In the `zicht_page` bundle configuration you need to refer to `acme.admin.page`
-service code to inform the page bundle you want to use that as a basis for your
-other definitions:
+#### `src/SiteBundle/Resources/config/admin.xml`
 
-```
-zicht_page:
-    admin:
-        base:
-            page: acme.admin.page
-```    
+We will add two admins, in stead of one. The first one is needed at the
+collection level, which is used to display a list of content items.
 
+The default implementation will be sortable, have an editable title, and
+will have a link to a detail admin for detailed configuration of the
+content items.
 
-
-#### Content items: rinse/repeat
-Repeat the steps above for the content items. You will need two separate admin
-implementations, one which is used at the 'collection' type where you can add
-and sort contentitems to a page, and one that is used as the base admin for the
-"details" of the content item.
-
-Check out the source code of this repository at the tag
-[`6.2-working-content-items`](https://github.com/zicht/cms-tutorial/tree/6.2-working-content-items/).
+The best approach at this point is simply inspect the diff on github:
+https://github.com/zicht/cms-tutorial/compare/7.5.4..7.6
 
 The interesting parts are:
-* [`app/config/bundles/zicht_page.yml`](https://github.com/zicht/cms-tutorial/tree/6.2-working-content-items/app/config/bundles/zicht_page.yml)
-* [`src/SiteBundle/Resources/config/admin.xml`](https://github.com/zicht/cms-tutorial/tree/6.2-working-content-items/src/SiteBundle/Resources/config/admin.xml)
+* [`app/config/bundles/zicht_page.yml`](https://github.com/zicht/cms-tutorial/tree/7.6/app/config/bundles/zicht_page.yml)
+* [`src/SiteBundle/Resources/config/admin.xml`](https://github.com/zicht/cms-tutorial/tree/7.6/src/SiteBundle/Resources/config/admin.xml)
 
-### 7.3 enable the url admins
-Toggle the url-admin flag:
+
+

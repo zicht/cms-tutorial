@@ -31,7 +31,7 @@ class SiteFixtures implements FixtureInterface, ContainerAwareInterface
         $em = $this->container->get('doctrine')->getManager();
 
         $pages = [];
-        Builder::create('Acme\\SiteBundle\\Entity')
+        Builder::create('Acme\\SiteBundle\\Entity\\Page')
             ->always(function ($object) use ($em, &$pages) {
                 $pages[$object->getTitle()]= $object;
                 $object->setLanguage('en');

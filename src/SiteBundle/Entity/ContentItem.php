@@ -12,4 +12,15 @@ use Zicht\Bundle\PageBundle\Entity\ContentItem as BaseContentItem;
  */
 class ContentItem extends BaseContentItem
 {
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $weight = 0;
 }
