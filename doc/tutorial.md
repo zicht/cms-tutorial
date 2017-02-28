@@ -646,7 +646,18 @@ You can enable the admin bundles by configuring the following:
     ];
 ```
 
-You will need a base config for the `sonata_block` bundle for it to run without
+You will need to add the configuration for forms and in the `framework`
+configuration:
+
+#### `app/config/bundles/framework.yml`
+
+```
+framework:
+    # ...
+    forms: ~
+```
+
+Add a base config for the `sonata_block` bundle for it to run without
 complaining:
 
 #### `app/config/bundles/sonata_block.yml`
@@ -656,6 +667,37 @@ sonata_block:
     blocks:
         sonata.admin.block.admin_list: ~
 ```
+
+And since you will need authorization for sonata to work, we add the
+security.yml as follows:
+
+#### `app/config/bundles/security.yml`
+
+```
+security:
+    access_decision_manager:
+        strategy:             unanimous
+
+    providers:
+        in_memory:
+            memory: ~
+
+    firewalls:
+        admin:
+            pattern: ^/
+            switch_user: true
+            context: user
+            anonymous: true
+            http_basic:
+                realm: 'Secured Area'
+```
+
+*Note*: This is the bare minimum for sonata to work. Obviously, in most cases
+you will want to configure some users and roles that you will want to grant or
+deny access. It is beyond the scope of this tutorial to configure this, as it
+is part of Symfony. 
+
+As a general rule, we always use `unanimous` as the access decision manager.
 
 You will also need to add the sonata routing to the already existing
 `zicht_page` routing:

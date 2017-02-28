@@ -9,3 +9,4 @@ framework:
         assets_version: %assets_version%
     default_locale:  en
     session: ~
+    form: ~

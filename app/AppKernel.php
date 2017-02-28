@@ -20,6 +20,12 @@ class AppKernel extends Kernel
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
             new Zicht\Bundle\MenuBundle\ZichtMenuBundle(),
 
+            new Sonata\AdminBundle\SonataAdminBundle(),
+            new Sonata\BlockBundle\SonataBlockBundle(),
+            new Sonata\DoctrineORMAdminBundle\SonataDoctrineORMAdminBundle(),
+            new Sonata\CoreBundle\SonataCoreBundle(),
+            new Zicht\Bundle\AdminBundle\ZichtAdminBundle(),
+
             new Acme\SiteBundle\AcmeSiteBundle()
         ];
 
