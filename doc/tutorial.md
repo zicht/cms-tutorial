@@ -962,7 +962,7 @@ will have a link to a detail admin for detailed configuration of the
 content items.
 
 The best approach at this point is simply inspect the diff on github:
-https://github.com/zicht/cms-tutorial/compare/7.5.4..7.6
+https://github.com/zicht/cms-tutorial/compare/7.5.4...7.6
 
 The interesting parts are:
 * [`app/config/bundles/zicht_page.yml`](https://github.com/zicht/cms-tutorial/tree/7.6/app/config/bundles/zicht_page.yml)
