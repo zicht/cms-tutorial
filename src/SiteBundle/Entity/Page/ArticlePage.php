@@ -4,14 +4,16 @@
  * @copyright Zicht Online <http://zicht.nl>
  */
 
-namespace Acme\SiteBundle\Entity;
+namespace Acme\SiteBundle\Entity\Page;
 
+
+use Acme\SiteBundle\Entity\Page as BasePage;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  */
-class ArticlePage extends Page
+class ArticlePage extends BasePage
 {
     /**
      * @ORM\Column(type="text")

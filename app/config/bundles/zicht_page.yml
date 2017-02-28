@@ -5,4 +5,4 @@ zicht_page:
     contentItemClass: ''
     types:
         page:
-            article: Acme\SiteBundle\Entity\ArticlePage
+            article: Acme\SiteBundle\Entity\Page\ArticlePage
