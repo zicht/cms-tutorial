@@ -969,4 +969,9 @@ The interesting parts are:
 * [`src/SiteBundle/Resources/config/admin.xml`](https://github.com/zicht/cms-tutorial/tree/7.6/src/SiteBundle/Resources/config/admin.xml)
 
 
+# Conclusion
+At this point, you have a working CMS. From here, think of a logical structure
+on how to configure your Page and ContentItem classes.
 
+The entirety of this tutorial is automated by
+[zicht/site-bundle](https://github.com/zicht/site-bundle).
