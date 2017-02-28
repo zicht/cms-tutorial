@@ -5,7 +5,27 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <!-- admin services go here -->
+        <service id="acme.admin.page" class="Acme\SiteBundle\Admin\PageAdmin">
+            <tag name="sonata.admin" manager_type="orm" group="Structure"
+                 label="Pages" label_translator_strategy="sonata.admin.label.strategy.underscore"/>
+            <argument/>
+            <argument>Acme\SiteBundle\Entity\Page</argument>
+            <argument>ZichtAdminBundle:CRUD</argument>
+            <argument>acme.admin.content_item</argument>
+
+            <call method="setPageManager">
+                <argument type="service" id="zicht_page.page_manager"/>
+            </call>
+            <call method="setUrlProvider">
+                <argument type="service" id="zicht_url.provider"/>
+            </call>
+            <call method="setMenuManager">
+                <argument type="service" id="zicht_menu.menu_manager"/>
+            </call>
+            <call method="setTranslationDomain">
+                <argument>admin</argument>
+            </call>
+        </service>
     </services>
 </container>
 
